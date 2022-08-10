@@ -12,7 +12,6 @@ function kv2_read(){
     if [[ "${response_code}" == '200' ]] && [[ "${content_type}" == 'application/json' ]]; then
         cat $data | jq -r '.data.data.config_content'
     else
-        echo $results
         error_message=$(echo $results | jq -r '.meta.errormsg')
         request_url=$(echo $results | jq -r '.meta.url')
         json_logger 'ERROR' "${response_code} ${request_url} ${error_message}"
