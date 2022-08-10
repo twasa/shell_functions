@@ -1,4 +1,5 @@
 source ${SHARE_LIB_PATH}/HTTP/common.sh
+source ${SHARE_LIB_PATH}/LOG/json_log.sh
 
 function kv2_read(){
     local kv2_api_path="/v1/${KV_NAME}/data${KV_PATH}"
@@ -11,7 +12,10 @@ function kv2_read(){
     if [[ "${response_code}" == '200' ]] && [[ "${content_type}" == 'application/json' ]]; then
         cat $data | jq -r '.data.data.config_content'
     else
-        echo $results | jq -r '.meta.errormsg'
+        echo $results
+        error_message=$(echo $results | jq -r '.meta.errormsg')
+        request_url=$(echo $results | jq -r '.meta.url')
+        json_logger 'ERROR' "${response_code} ${request_url} ${error_message}"
         return 1
     fi
 }

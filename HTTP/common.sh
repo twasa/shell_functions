@@ -45,6 +45,6 @@ function request {
     # set defaults if command not supplied
     if [ -z "$URL" ] ; then exit_abnormal ; fi
     if [ -z "$METHOD" ] ; then METHOD='GET' ; fi
-    response=$(curl --silent --write-out '%{json}' -X ${METHOD} -H ${HEADERS} -o $tempfile $URL)
+    response=$(curl --silent --write-out '%{json}' -L -X ${METHOD} -H ${HEADERS} -o $tempfile $URL)
     echo "{\"meta\":${response}, \"data\":\"${tempfile}\"}"
 }
