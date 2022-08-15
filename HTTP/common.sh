@@ -1,4 +1,5 @@
 #!/bin/bash
+source ${SHARE_LIB_PATH}/LOG/logger.sh
 
 # Function: Print a help message.
 function usage(){
@@ -36,15 +37,25 @@ function request {
                 DATA=$OPTARG
                 ;;
             :) # If expected argument omitted:
-                echo "Error: -$OPTARG requires an argument."
+                logger "Error: -$OPTARG requires an argument."
                 exit_abnormal
                 ;;
         esac
     done
     shift $((OPTIND-1))
     # set defaults if command not supplied
-    if [ -z "$URL" ] ; then exit_abnormal ; fi
-    if [ -z "$METHOD" ] ; then METHOD='GET' ; fi
-    response=$(curl --silent --write-out '%{json}' -L -X ${METHOD} -H ${HEADERS} -o $tempfile $URL)
-    echo "{\"meta\":${response}, \"data\":\"${tempfile}\"}"
+    if [ -z "$URL" ]; then exit_abnormal ; fi
+    if [ -z "$METHOD" ]; then METHOD='GET' ; fi
+    if [ ! -z "$DATA" ]; then
+        CURL_DATA_ARG=" -d ${DATA}"
+    else
+        CURL_DATA_ARG=""
+    fi
+    response=$(curl -s --write-out '%{json}' -L -X ${METHOD} -H ${HEADERS} -o $tempfile $URL)
+    if [[ "$?" == 0 ]]; then
+        echo "{\"meta\":${response}, \"data\":\"${tempfile}\"}"
+    else
+        echo "${response}"
+        exit 1
+    fi
 }
