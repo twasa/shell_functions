@@ -7,9 +7,9 @@ function kv2_read() {
     local response_code=''
     local results=''
     local content_type=''
-    local kv2_api_path="/v1/${KV_NAME}/data${KV_PATH}"
+    local kv2_key_path="/v1/${KV_NAME}/data${KV_PATH}"
     local kv2_api_header="X-Vault-Token: ${VAULT_TOKEN}"
-    local kv2_uri="${VAULT_ADDR}${kv2_api_path}"
+    local kv2_uri="${VAULT_ADDR}${kv2_key_path}"
     results=$(request -m get -h ${kv2_api_header} -u "${kv2_uri}")
     if [[ "$?" != 0 ]]; then
         logger 'ERROR' "${results}"
